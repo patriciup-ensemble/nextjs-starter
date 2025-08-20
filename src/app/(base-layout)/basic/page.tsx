@@ -68,6 +68,7 @@ export default async function Page() {
   if (!page) {
     notFound();
   }
+  console.log(page);
 
   const pageImage = (page as unknown as {
     image?: { responsiveImage?: FragmentOf<typeof ResponsiveImageFragment> };
