@@ -1,6 +1,3 @@
-import { ImageBlockFragment } from '@/components/blocks/ImageBlock';
-import { ImageGalleryBlockFragment } from '@/components/blocks/ImageGalleryBlock';
-import { VideoBlockFragment } from '@/components/blocks/VideoBlock';
 import { TagFragment } from '@/lib/datocms/commonFragments';
 import { graphql } from '@/lib/datocms/graphql';
 
@@ -33,21 +30,6 @@ export const query = graphql(
         _firstPublishedAt
         structuredText {
           value
-          blocks {
-            ... on RecordInterface {
-              id
-              __typename
-            }
-            ... on ImageBlockRecord {
-              ...ImageBlockFragment
-            }
-            ... on ImageGalleryBlockRecord {
-              ...ImageGalleryBlockFragment
-            }
-            ... on VideoBlockRecord {
-              ...VideoBlockFragment
-            }
-          }
           links {
             ... on RecordInterface {
               id
@@ -61,5 +43,5 @@ export const query = graphql(
       }
     }
   `,
-  [TagFragment, ImageBlockFragment, ImageGalleryBlockFragment, VideoBlockFragment],
+  [TagFragment],
 );

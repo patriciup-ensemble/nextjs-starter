@@ -1,6 +1,4 @@
 import HeadingWithAnchorLink from '@/components/HeadingWithAnchorLink';
-import ImageBlock from '@/components/blocks/ImageBlock';
-import ImageGalleryBlock from '@/components/blocks/ImageGalleryBlock';
 import type { ResultOf } from '@/lib/datocms/graphql';
 import type { ContentComponentType } from '@/lib/datocms/realtime/generatePageComponent';
 import { isCode, isHeading } from 'datocms-structured-text-utils';
@@ -16,7 +14,6 @@ import type { PageProps, query } from './common';
  * Components and imported libraries, and only include them in the client bundle
  * when they're needed.
  */
-const VideoBlock = dynamic(() => import('@/components/blocks/VideoBlock'));
 const Code = dynamic(() => import('@/components/Code'));
 
 /**
@@ -59,28 +56,7 @@ const Content: ContentComponentType<PageProps, ResultOf<typeof query>> = ({ data
             )),
           ]
         }
-        renderBlock={
-          /*
-           * If the structured text embeds any blocks, it's up to you to decide
-           * how to render them:
-           */
-          ({ record }) => {
-            switch (record.__typename) {
-              case 'VideoBlockRecord': {
-                return <VideoBlock data={record} />;
-              }
-              case 'ImageBlockRecord': {
-                return <ImageBlock data={record} />;
-              }
-              case 'ImageGalleryBlockRecord': {
-                return <ImageGalleryBlock data={record} />;
-              }
-              default: {
-                return null;
-              }
-            }
-          }
-        }
+        // No block rendering as blocks are not used in current schema
         renderInlineRecord={
           /*
            * If the structured text includes a reference to another DatoCMS
