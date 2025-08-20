@@ -251,6 +251,78 @@ type GlobalSeoField {
   twitterAccount: String
 }
 
+"""Block of type Image Block (image_block)"""
+type ImageBlockRecord implements RecordInterface {
+  _createdAt: DateTime!
+
+  """Editing URL"""
+  _editingUrl: String
+  _firstPublishedAt: DateTime!
+  _isValid: BooleanType!
+  _modelApiKey: String!
+  _publicationScheduledAt: DateTime
+  _publishedAt: DateTime!
+
+  """Generates SEO and Social card meta tags to be used in your frontend"""
+  _seoMetaTags(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+  ): [Tag!]!
+  _status: ItemStatus!
+  _unpublishingScheduledAt: DateTime
+  _updatedAt: DateTime!
+  id: ItemId!
+  imageField: FileField
+}
+
+"""Block of type Image Gallery Block (image_gallery_block)"""
+type ImageGalleryBlockRecord implements RecordInterface {
+  _createdAt: DateTime!
+
+  """Editing URL"""
+  _editingUrl: String
+  _firstPublishedAt: DateTime!
+  _isValid: BooleanType!
+  _modelApiKey: String!
+  _publicationScheduledAt: DateTime
+  _publishedAt: DateTime!
+
+  """Generates SEO and Social card meta tags to be used in your frontend"""
+  _seoMetaTags(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+  ): [Tag!]!
+  _status: ItemStatus!
+  _unpublishingScheduledAt: DateTime
+  _updatedAt: DateTime!
+  id: ItemId!
+  imageField: [FileField!]!
+}
+
+"""Block of type 😁 image (image)"""
+type ImageRecord implements RecordInterface {
+  _createdAt: DateTime!
+
+  """Editing URL"""
+  _editingUrl: String
+  _firstPublishedAt: DateTime!
+  _isValid: BooleanType!
+  _modelApiKey: String!
+  _publicationScheduledAt: DateTime
+  _publishedAt: DateTime!
+
+  """Generates SEO and Social card meta tags to be used in your frontend"""
+  _seoMetaTags(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+  ): [Tag!]!
+  _status: ItemStatus!
+  _unpublishingScheduledAt: DateTime
+  _updatedAt: DateTime!
+  id: ItemId!
+  imageBlock: FileField
+}
+
 input ImgixParams {
   """
   Aspect Ratio
@@ -2228,6 +2300,16 @@ Represents non-fractional signed whole numeric values. Int can represent values 
 """
 scalar IntType
 
+scalar ItemId
+
+enum ItemStatus {
+  draft
+  updated
+  published
+}
+
+scalar JsonField
+
 scalar MetaTagAttributes
 
 enum MuxThumbnailFormatType {
@@ -2243,6 +2325,44 @@ input OrientationFilter {
 
   """Exclude uploads with the specified orientation"""
   neq: UploadOrientation
+}
+
+union PageModelStructuredTextBlocksField = ImageBlockRecord | ImageGalleryBlockRecord | VideoBlockRecord
+
+type PageModelStructuredTextField {
+  blocks: [PageModelStructuredTextBlocksField!]!
+  inlineBlocks: [PageModelStructuredTextInlineBlocksField!]!
+  links: [PageRecord!]!
+  value: JsonField!
+}
+
+union PageModelStructuredTextInlineBlocksField = ImageBlockRecord | ImageGalleryBlockRecord | VideoBlockRecord
+
+"""Record of type Page (page)"""
+type PageRecord implements RecordInterface {
+  _createdAt: DateTime!
+
+  """Editing URL"""
+  _editingUrl: String
+  _firstPublishedAt: DateTime!
+  _isValid: BooleanType!
+  _modelApiKey: String!
+  _publicationScheduledAt: DateTime
+  _publishedAt: DateTime!
+
+  """Generates SEO and Social card meta tags to be used in your frontend"""
+  _seoMetaTags(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+  ): [Tag!]!
+  _status: ItemStatus!
+  _unpublishingScheduledAt: DateTime
+  _updatedAt: DateTime!
+  id: ItemId!
+  image: FileField
+  seometatags: SeoField
+  structuredText: PageModelStructuredTextField
+  title: String
 }
 
 """The query root for this schema"""
@@ -2284,6 +2404,17 @@ type Query {
     orderBy: [UploadOrderBy] = [_createdAt_DESC]
   ): [FileField!]!
 
+  """Returns the single instance record"""
+  page(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+  ): PageRecord
+
   """Returns a specific asset"""
   upload(
     """The locale to use to fetch the field's content"""
@@ -2296,6 +2427,28 @@ type Query {
     filter: UploadFilter
     orderBy: [UploadOrderBy] = [_createdAt_DESC]
   ): FileField
+}
+
+interface RecordInterface {
+  _createdAt: DateTime!
+
+  """Editing URL"""
+  _editingUrl: String
+  _firstPublishedAt: DateTime!
+  _isValid: BooleanType!
+  _modelApiKey: String!
+  _publicationScheduledAt: DateTime
+  _publishedAt: DateTime!
+
+  """Generates SEO and Social card meta tags to be used in your frontend"""
+  _seoMetaTags(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+  ): [Tag!]!
+  _status: ItemStatus!
+  _unpublishingScheduledAt: DateTime
+  _updatedAt: DateTime!
+  id: ItemId!
 }
 
 """Specifies how to filter by upload type"""
@@ -2847,6 +3000,40 @@ input UploadWidthFilter {
 
   """Search assets that do not have the specified width"""
   neq: IntType
+}
+
+"""Block of type Video Block (video_block)"""
+type VideoBlockRecord implements RecordInterface {
+  _createdAt: DateTime!
+
+  """Editing URL"""
+  _editingUrl: String
+  _firstPublishedAt: DateTime!
+  _isValid: BooleanType!
+  _modelApiKey: String!
+  _publicationScheduledAt: DateTime
+  _publishedAt: DateTime!
+
+  """Generates SEO and Social card meta tags to be used in your frontend"""
+  _seoMetaTags(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+  ): [Tag!]!
+  _status: ItemStatus!
+  _unpublishingScheduledAt: DateTime
+  _updatedAt: DateTime!
+  id: ItemId!
+  videoField: VideoField
+}
+
+type VideoField {
+  height: IntType!
+  provider: String!
+  providerUid: String!
+  thumbnailUrl: String!
+  title: String!
+  url: String!
+  width: IntType!
 }
 
 enum VideoMp4Res {
