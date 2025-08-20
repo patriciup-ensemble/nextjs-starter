@@ -16,7 +16,8 @@ export default function Page() {
         <li>
           <Link href="/real-time-updates">Real-time Updates:</Link>{' '}
           <span>
-            Slightly more complex code, but content updates in real-time when Draft Mode is on
+            Slightly more complex code, but content updates in real-time when Draft Mode is on Is on
+            is on is on
           </span>
         </li>
       </ul>
