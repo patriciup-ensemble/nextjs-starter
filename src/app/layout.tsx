@@ -46,9 +46,7 @@ export default function RootLayout({
             <a className="navlink" href="/real-time-updates">
               ⚡️ Real-time Updates Route
             </a>
-            <a className="navlink" href="/landing">
-              🧪 Landing (Live Preview)
-            </a>
+           
           </nav>
           <DraftModeToggler draftModeEnabled={draftMode().isEnabled} />
         </header>
