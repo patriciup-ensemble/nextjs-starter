@@ -5,7 +5,7 @@ import { query } from './common';
 
 const { generateMetadataFn, Page } = generatePageComponentAndMetadataFn({
   query,
-  pickSeoMetaTags: (data) => data.landing?._seoMetaTags,
+  pickSeoMetaTags: (data) => data.landing && '_seoMetaTags' ? (data.landing as { _seoMetaTags?: any })._seoMetaTags : undefined,
   contentComponent: Content,
   realtimeComponent: dynamic(() => import('./RealTime')),
 });

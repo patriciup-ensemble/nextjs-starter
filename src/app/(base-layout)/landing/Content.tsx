@@ -6,16 +6,16 @@ import type { PageProps, query } from './common';
 const Content: ContentComponentType<PageProps, ResultOf<typeof query>> = ({ data }) => {
   const landing = data.landing;
 
-  const heroTitle = landing?.title || 'Build content-rich apps, faster.';
+  const heroTitle =  'Build content-rich apps, faster.';
   const heroSubtitle =
-    landing?.text ||
+   
     'A minimal, production-ready starter featuring typed GraphQL, real-time content updates, and SEO integration.';
 
-  const primaryLabel = landing?.primarycta?.label || landing?.primaryCta || 'Get started (Basic)';
-  const primaryUrl = landing?.primarycta?.url || '/basic';
+  const primaryLabel =  'Get started (Basic)';
+  const primaryUrl =  '/basic';
 
-  const secondaryLabel = landing?.secondarycta?.label || landing?.secondaryCta || 'See real-time updates';
-  const secondaryUrl = landing?.secondarycta?.url || '/real-time-updates';
+  const secondaryLabel =  'See real-time updates';
+  const secondaryUrl =  '/real-time-updates';
 
   return (
     <>
