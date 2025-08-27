@@ -4,8 +4,12 @@ import { executeQuery } from '@/lib/datocms/executeQuery';
 import { graphql } from '@/lib/datocms/graphql';
 import { draftMode } from 'next/headers';
 import { toNextMetadata } from 'react-datocms';
+import "bootstrap/dist/css/bootstrap.min.css";
+
+
 
 import './global.css';
+import Script from 'next/script';
 
 const query = graphql(
   /* GraphQL */ `
@@ -33,7 +37,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <body className="main-container">
         <header>
           <h1>DatoCMS + Next.js Starter Kit</h1>
           <nav>
@@ -53,7 +57,11 @@ export default function RootLayout({
           </nav>
           <DraftModeToggler draftModeEnabled={draftMode().isEnabled} />
         </header>
-        <main>{children}</main>
+        <main >{children}</main>
+        <Script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );

@@ -1,3 +1,5 @@
+
+
 import dynamic from 'next/dynamic';
 import { draftMode } from 'next/headers';
 import { notFound } from 'next/navigation';
@@ -9,6 +11,11 @@ import { TagFragment } from '@/lib/datocms/commonFragments';
 import { StructuredText, renderNodeRule } from 'react-datocms';
 import { isCode, isHeading } from 'datocms-structured-text-utils';
 import HeadingWithAnchorLink from '@/components/HeadingWithAnchorLink';
+import "bootstrap/dist/css/bootstrap.min.css";
+
+
+
+
 
 const Code = dynamic(() => import('@/components/Code'));
 
@@ -22,6 +29,18 @@ const query = graphql(
         }
         title
         heading
+        carousel {
+      __typename
+      ... on CarouselslideRecord {
+        id
+        caption
+        link
+        image {
+          url
+          alt
+        }
+      }
+    }
         image {
           responsiveImage {
             ...ResponsiveImageFragment
@@ -32,8 +51,9 @@ const query = graphql(
             ...ResponsiveImageFragment
           }
         }
-          structuredtext {
+         structuredtext {
           value
+         
         }
       }
     }
@@ -55,6 +75,8 @@ export default async function Page() {
     includeDrafts: isDraftModeEnabled,
   });
 
+  
+
   if (!landing) {
     notFound();
   }
@@ -68,27 +90,58 @@ export default async function Page() {
     secondaryimage?: { responsiveImage?: FragmentOf<typeof ResponsiveImageFragment> };
   }).secondaryimage;
 
+  
   return (
-    <>
+    <main className="main-container">
       <h1>{landing.title}</h1>
       <p style={{fontSize:'20px', fontWeight:700}}>{landing.heading}</p>
+      <div id="carouselExample" className="carousel slide">
+  <div className="carousel-inner">
+    {landing.carousel.map((slide, i) => (
+      <div key={slide.id} className={`carousel-item ${i === 0 ? "active" : ""}`}>
+        <img
+          src={slide?.image?.url}
+          className="d-block w-80 h-100"
+          alt={slide.image?.alt || "Slide"}
+        />
+        {slide.caption && (
+          <div className="carousel-caption d-none d-md-block">
+            <p>{slide.caption}</p>
+          </div>
+        )}
+      </div>
+    ))}
+  </div>
+  <button
+    className="carousel-control-prev"
+    type="button"
+    data-bs-target="#carouselExample"
+    data-bs-slide="prev"
+  >
+    <span className="carousel-control-prev-icon"></span>
+  </button>
+  <button
+    className="carousel-control-next"
+    type="button"
+    data-bs-target="#carouselExample"
+    data-bs-slide="next"
+  >
+    <span className="carousel-control-next-icon"></span>
+  </button>
+</div>
+
+
       <StructuredText
         data={landing.structuredtext}
-        customNodeRules={
-          /*
-           * Although the component knows how to convert all "standard" elements
-           * (headings, bullet lists, etc.) into HTML, it's possible to
-           * customize the rendering of each node.
-           */
-          [
-            renderNodeRule(isCode, ({ node, key }) => <Code key={key} node={node} />),
-            renderNodeRule(isHeading, ({ node, key, children }) => (
-              <HeadingWithAnchorLink node={node} key={key}>
-                {children}
-              </HeadingWithAnchorLink>
-            )),
-          ]
-        }
+        customNodeRules={[
+          renderNodeRule(isCode, ({ node, key }) => <Code key={key} node={node} />),
+          renderNodeRule(isHeading, ({ node, key, children }) => (
+            <HeadingWithAnchorLink node={node} key={key}>
+              {children}
+            </HeadingWithAnchorLink>
+          )),
+        ]}
+       
       />
       {pageImage?.responsiveImage && (
         <ResponsiveImage data={pageImage.responsiveImage} />
@@ -96,6 +149,8 @@ export default async function Page() {
        {secondaryImage?.responsiveImage && (
         <ResponsiveImage data={secondaryImage.responsiveImage} />
       )}
+
+     
       {/*
        * Structured Text is a JSON format similar to HTML, but with the advantage
        * of a significantly reduced and tailored set of possible tags
@@ -103,6 +158,6 @@ export default async function Page() {
        * to other DatoCMS records and embed custom DatoCMS blocks.
        */}
       
-    </>
+    </main>
   );
 }
