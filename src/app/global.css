@@ -4,6 +4,8 @@
 @import url('https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.css') screen
   and (prefers-color-scheme: light);
 
+
+
 :root {
   --font-mono: Menlo, Consolas, monaco, 'Ubuntu Mono', 'Liberation Mono', 'Courier New', Courier,
     monospace;
@@ -315,4 +317,128 @@ button {
   &:focus {
     opacity: 0.8;
   }
+}
+
+/* Landing page helpers */
+.hero {
+  text-align: center;
+  margin-top: 0.5rem;
+
+  .subtitle {
+    color: var(--color-text-2);
+    max-width: 60ch;
+    margin: 0.5rem auto 1rem;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.6rem;
+  }
+}
+
+.features {
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+  }
+
+  .feature {
+    background: var(--color-background-2);
+    border: 1px solid var(--color-background-3);
+    border-radius: 8px;
+    padding: 1rem;
+  }
+}
+
+.cta {
+  text-align: center;
+
+  .actions {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+}
+
+.button {
+  display: inline-block;
+  text-decoration: none;
+  border: 1px solid var(--color-accent);
+  background: var(--color-accent);
+  color: var(--color-background-1);
+  border-radius: 8px;
+  padding: 0.5rem 0.7rem;
+  transition: opacity 0.15s ease;
+
+  &:hover,
+  &:focus {
+    opacity: 0.9;
+  }
+}
+
+.button--secondary {
+  background: transparent;
+  color: var(--color-accent);
+}
+
+.button--ghost {
+  background: transparent;
+  border-color: var(--color-background-3);
+  color: var(--color-text-1);
+}
+
+
+
+.carousel::-webkit-scrollbar {
+  display: none;
+}
+
+
+.carousel-caption {
+  margin-top: 4.5rem;
+  color: #555;
+}
+
+.carousel-link {
+  margin-top: 0.5rem;
+  color: #2563eb;
+  text-decoration: underline;
+  display: block;
+}
+
+/* Arrow buttons */
+
+.main-container {
+  max-width: 900px;  /* adjust to your preference */
+  margin: 0 auto;    /* horizontally center */
+  padding: 1rem;
+}
+#carouselExample {
+  margin: 2rem auto; /* center horizontally */
+}
+#carouselExample {
+  max-width: 700px;
+  height: 400px;
+  margin: 2rem auto;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+#carouselExample .carousel-item img,
+.carousel-slide img {
+  width: 100%;
+  aspect-ratio: 16/13; /* keeps 16:9 ratio */
+  object-fit: cover;
+}
+
+#carouselExample .carousel-caption {
+  background: rgba(0,0,0,0.4);
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
 }

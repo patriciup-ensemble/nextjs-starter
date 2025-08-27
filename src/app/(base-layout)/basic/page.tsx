@@ -74,11 +74,18 @@ export default async function Page() {
     image?: { responsiveImage?: FragmentOf<typeof ResponsiveImageFragment> };
   }).image;
 
+  const secondaryImage = (page as unknown as {
+    secondaryimage?: { responsiveImage?: FragmentOf<typeof ResponsiveImageFragment> };
+  }).secondaryimage;
+
   return (
     <>
       <h1>{page.title}</h1>
       {pageImage?.responsiveImage && (
         <ResponsiveImage data={pageImage.responsiveImage} />
+      )}
+       {secondaryImage?.responsiveImage && (
+        <ResponsiveImage data={secondaryImage.responsiveImage} />
       )}
       {/*
        * Structured Text is a JSON format similar to HTML, but with the advantage

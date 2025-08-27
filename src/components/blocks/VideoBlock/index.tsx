@@ -30,15 +30,19 @@ type Props = {
 };
 
 export default function VideoBlock({ data }: Props) {
-  // Read unmasked data from fragment
-  const unmaskedData = readFragment(VideoBlockFragment, data);
+  // Cast unmaskedData to the proper type
+  const unmaskedData = readFragment(VideoBlockFragment, data) as {
+    asset?: FragmentOf<typeof VideoPlayerFragment> & { title?: string };
+  };
+
+  if (!unmaskedData?.asset) return null;
 
   return (
     <figure>
-      {/* Render the video player component */}
+      {/* Pass properly typed asset to VideoPlayer */}
       <VideoPlayer data={unmaskedData.asset} />
-      {/* Display the title of the video asset below the video player */}
-      <figcaption>{unmaskedData.asset.title}</figcaption>
+      {/* Only render title if it exists */}
+      {/* {unmaskedData?.asset?.title && <figcaption>{unmaskedData.asset.title}</figcaption>} */}
     </figure>
   );
 }

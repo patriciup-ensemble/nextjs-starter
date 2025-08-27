@@ -32,15 +32,20 @@ type Props = {
 };
 
 export default function ImageBlock({ data }: Props) {
-  // Read unmasked data from fragment
-  const unmaskedData = readFragment(ImageBlockFragment, data);
+  // Cast unmaskedData to the correct type
+  const unmaskedData = readFragment(ImageBlockFragment, data) as {
+    asset?: {
+      title?: string;
+      responsiveImage?: FragmentOf<typeof ResponsiveImageFragment>;
+    };
+  };
+
+  if (!unmaskedData?.asset?.responsiveImage) return null;
 
   return (
     <figure>
-      {/* Display responsive image */}
       <ResponsiveImage data={unmaskedData.asset.responsiveImage} />
-      {/* Display image title */}
-      <figcaption>{unmaskedData.asset.title}</figcaption>
+      {unmaskedData.asset.title && <figcaption>{unmaskedData.asset.title}</figcaption>}
     </figure>
   );
 }

@@ -33,18 +33,26 @@ type Props = {
 };
 
 export default function ImageGalleryBlock({ data }: Props) {
-  // Read unmasked data from fragment
-  const unmaskedData = readFragment(ImageGalleryBlockFragment, data);
+  // Cast unmaskedData to the expected type
+  const unmaskedData = readFragment(ImageGalleryBlockFragment, data) as {
+    assets: Array<{
+      id: string;
+      title?: string;
+      responsiveImage?: FragmentOf<typeof ResponsiveImageFragment>;
+    }>;
+  };
+
+  if (!unmaskedData?.assets?.length) return null;
 
   return (
     <div className="gallery">
       <div>
         {unmaskedData.assets.map((asset) => (
           <figure key={asset.id}>
-            {/* Display responsive image for each asset */}
-            <ResponsiveImage data={asset.responsiveImage} imgStyle={{ width: 'auto' }} />
-            {/* Display title for each asset */}
-            <figcaption>{asset.title}</figcaption>
+            {asset.responsiveImage && (
+              <ResponsiveImage data={asset.responsiveImage} imgStyle={{ width: 'auto', height: '200px', objectFit: 'cover' }} />
+            )}
+            {asset.title && <figcaption>{asset.title}</figcaption>}
           </figure>
         ))}
       </div>
