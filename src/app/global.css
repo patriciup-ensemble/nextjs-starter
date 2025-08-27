@@ -4,7 +4,7 @@
 @import url('https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.css') screen
   and (prefers-color-scheme: light);
 
-  @import "keen-slider/keen-slider.min.css";
+
 
 :root {
   --font-mono: Menlo, Consolas, monaco, 'Ubuntu Mono', 'Liberation Mono', 'Courier New', Courier,
