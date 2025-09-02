@@ -1,3 +1,61 @@
+type AboutModelAboutstructuredtextField {
+  blocks: [String!]!
+  inlineBlocks: [String!]!
+  links: [String!]!
+  value: JsonField!
+}
+
+"""Record of type About (about)"""
+type AboutRecord implements RecordInterface {
+  _createdAt: DateTime!
+
+  """Editing URL"""
+  _editingUrl: String
+  _firstPublishedAt: DateTime!
+  _isValid: BooleanType!
+  _modelApiKey: String!
+  _publicationScheduledAt: DateTime
+  _publishedAt: DateTime!
+
+  """Generates SEO and Social card meta tags to be used in your frontend"""
+  _seoMetaTags(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+  ): [Tag!]!
+  _status: ItemStatus!
+  _unpublishingScheduledAt: DateTime
+  _updatedAt: DateTime!
+  aboutstructuredtext: AboutModelAboutstructuredtextField
+  id: ItemId!
+  sidelinks: [SidelinkitemRecord!]!
+  sidenavigation: [SidenavigationitemRecord!]!
+  title: String
+}
+
+"""Block of type BackgroundImage (backgroundimage)"""
+type BackgroundimageRecord implements RecordInterface {
+  _createdAt: DateTime!
+
+  """Editing URL"""
+  _editingUrl: String
+  _firstPublishedAt: DateTime!
+  _isValid: BooleanType!
+  _modelApiKey: String!
+  _publicationScheduledAt: DateTime
+  _publishedAt: DateTime!
+
+  """Generates SEO and Social card meta tags to be used in your frontend"""
+  _seoMetaTags(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+  ): [Tag!]!
+  _status: ItemStatus!
+  _unpublishingScheduledAt: DateTime
+  _updatedAt: DateTime!
+  bgImage: FileField
+  id: ItemId!
+}
+
 """Specifies how to filter Boolean fields"""
 input BooleanFilter {
   """Search for records with an exact match"""
@@ -2560,6 +2618,33 @@ type LandingRecord implements RecordInterface {
   title: String
 }
 
+"""Block of type Menu Item Block (menu_item_block)"""
+type MenuItemBlockRecord implements RecordInterface {
+  _createdAt: DateTime!
+
+  """Editing URL"""
+  _editingUrl: String
+  _firstPublishedAt: DateTime!
+  _isValid: BooleanType!
+  _modelApiKey: String!
+  _publicationScheduledAt: DateTime
+  _publishedAt: DateTime!
+
+  """Generates SEO and Social card meta tags to be used in your frontend"""
+  _seoMetaTags(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+  ): [Tag!]!
+  _status: ItemStatus!
+  _unpublishingScheduledAt: DateTime
+  _updatedAt: DateTime!
+  id: ItemId!
+  label: String
+  newtab: BooleanType!
+  submenu: [MenuItemBlockRecord!]!
+  url: String
+}
+
 scalar MetaTagAttributes
 
 enum MuxThumbnailFormatType {
@@ -2663,6 +2748,20 @@ type Query {
     filter: LandingModelFilter
   ): CollectionMetadata!
 
+  """Returns meta information regarding a record collection"""
+  _allSiteHeadersMeta(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+    filter: SiteHeaderModelFilter
+  ): CollectionMetadata!
+
+  """Returns meta information regarding a record collection"""
+  _allSiteconfigsMeta(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+    filter: SiteconfigModelFilter
+  ): CollectionMetadata!
+
   """Returns meta information regarding an assets collection"""
   _allUploadsMeta(
     """The locale to use to fetch the field's content"""
@@ -2680,6 +2779,17 @@ type Query {
     """
     fallbackLocales: [SiteLocale!]
   ): Site!
+
+  """Returns the single instance record"""
+  about(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+  ): AboutRecord
 
   """Returns a collection of records"""
   allLandings(
@@ -2699,6 +2809,44 @@ type Query {
     filter: LandingModelFilter
     orderBy: [LandingModelOrderBy] = [_updatedAt_DESC]
   ): [LandingRecord!]!
+
+  """Returns a collection of records"""
+  allSiteHeaders(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+
+    """Skip the first results"""
+    skip: IntType
+
+    """Limit the number of results"""
+    first: IntType = 20
+    filter: SiteHeaderModelFilter
+    orderBy: [SiteHeaderModelOrderBy] = [_updatedAt_DESC]
+  ): [SiteHeaderRecord!]!
+
+  """Returns a collection of records"""
+  allSiteconfigs(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+
+    """Skip the first results"""
+    skip: IntType
+
+    """Limit the number of results"""
+    first: IntType = 20
+    filter: SiteconfigModelFilter
+    orderBy: [SiteconfigModelOrderBy] = [_updatedAt_DESC]
+  ): [SiteconfigRecord!]!
 
   """Returns a collection of assets"""
   allUploads(
@@ -2742,6 +2890,32 @@ type Query {
     """
     fallbackLocales: [SiteLocale!]
   ): PageRecord
+
+  """Returns a specific record"""
+  siteHeader(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+    filter: SiteHeaderModelFilter
+    orderBy: [SiteHeaderModelOrderBy] = [_updatedAt_DESC]
+  ): SiteHeaderRecord
+
+  """Returns a specific record"""
+  siteconfig(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+    filter: SiteconfigModelFilter
+    orderBy: [SiteconfigModelOrderBy] = [_updatedAt_DESC]
+  ): SiteconfigRecord
 
   """Returns a specific asset"""
   upload(
@@ -2831,6 +3005,56 @@ input SeoFilter {
   exists: BooleanType
 }
 
+"""Block of type SideLinksItems (sidelinkitem)"""
+type SidelinkitemRecord implements RecordInterface {
+  _createdAt: DateTime!
+
+  """Editing URL"""
+  _editingUrl: String
+  _firstPublishedAt: DateTime!
+  _isValid: BooleanType!
+  _modelApiKey: String!
+  _publicationScheduledAt: DateTime
+  _publishedAt: DateTime!
+
+  """Generates SEO and Social card meta tags to be used in your frontend"""
+  _seoMetaTags(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+  ): [Tag!]!
+  _status: ItemStatus!
+  _unpublishingScheduledAt: DateTime
+  _updatedAt: DateTime!
+  id: ItemId!
+  title: String
+  url: String
+}
+
+"""Block of type SideNavigationItem (sidenavigationitem)"""
+type SidenavigationitemRecord implements RecordInterface {
+  _createdAt: DateTime!
+
+  """Editing URL"""
+  _editingUrl: String
+  _firstPublishedAt: DateTime!
+  _isValid: BooleanType!
+  _modelApiKey: String!
+  _publicationScheduledAt: DateTime
+  _publishedAt: DateTime!
+
+  """Generates SEO and Social card meta tags to be used in your frontend"""
+  _seoMetaTags(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+  ): [Tag!]!
+  _status: ItemStatus!
+  _unpublishingScheduledAt: DateTime
+  _updatedAt: DateTime!
+  anchor: String
+  id: ItemId!
+  label: String
+}
+
 type Site {
   favicon: FileField
   faviconMetaTags(
@@ -2850,8 +3074,129 @@ type Site {
   noIndex: BooleanType
 }
 
+input SiteHeaderModelFilter {
+  _createdAt: CreatedAtFilter
+  id: ItemIdFilter
+  _firstPublishedAt: PublishedAtFilter
+  _publicationScheduledAt: PublishedAtFilter
+  _unpublishingScheduledAt: PublishedAtFilter
+  _publishedAt: PublishedAtFilter
+  _status: StatusFilter
+  _updatedAt: UpdatedAtFilter
+  _isValid: BooleanFilter
+  logo: FileFilter
+  OR: [SiteHeaderModelFilter]
+  AND: [SiteHeaderModelFilter]
+}
+
+enum SiteHeaderModelOrderBy {
+  _createdAt_ASC
+  _createdAt_DESC
+  id_ASC
+  id_DESC
+  _firstPublishedAt_ASC
+  _firstPublishedAt_DESC
+  _publicationScheduledAt_ASC
+  _publicationScheduledAt_DESC
+  _unpublishingScheduledAt_ASC
+  _unpublishingScheduledAt_DESC
+  _publishedAt_ASC
+  _publishedAt_DESC
+  _status_ASC
+  _status_DESC
+  _updatedAt_ASC
+  _updatedAt_DESC
+  _isValid_ASC
+  _isValid_DESC
+}
+
+"""Record of type Site Header (site_header)"""
+type SiteHeaderRecord implements RecordInterface {
+  _createdAt: DateTime!
+
+  """Editing URL"""
+  _editingUrl: String
+  _firstPublishedAt: DateTime!
+  _isValid: BooleanType!
+  _modelApiKey: String!
+  _publicationScheduledAt: DateTime
+  _publishedAt: DateTime!
+
+  """Generates SEO and Social card meta tags to be used in your frontend"""
+  _seoMetaTags(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+  ): [Tag!]!
+  _status: ItemStatus!
+  _unpublishingScheduledAt: DateTime
+  _updatedAt: DateTime!
+  id: ItemId!
+  logo: FileField
+  menuitems: [MenuItemBlockRecord!]!
+}
+
 enum SiteLocale {
   en
+}
+
+input SiteconfigModelFilter {
+  _createdAt: CreatedAtFilter
+  id: ItemIdFilter
+  _firstPublishedAt: PublishedAtFilter
+  _publicationScheduledAt: PublishedAtFilter
+  _unpublishingScheduledAt: PublishedAtFilter
+  _publishedAt: PublishedAtFilter
+  _status: StatusFilter
+  _updatedAt: UpdatedAtFilter
+  _isValid: BooleanFilter
+  backgroundimage: FileFilter
+  OR: [SiteconfigModelFilter]
+  AND: [SiteconfigModelFilter]
+}
+
+enum SiteconfigModelOrderBy {
+  _createdAt_ASC
+  _createdAt_DESC
+  id_ASC
+  id_DESC
+  _firstPublishedAt_ASC
+  _firstPublishedAt_DESC
+  _publicationScheduledAt_ASC
+  _publicationScheduledAt_DESC
+  _unpublishingScheduledAt_ASC
+  _unpublishingScheduledAt_DESC
+  _publishedAt_ASC
+  _publishedAt_DESC
+  _status_ASC
+  _status_DESC
+  _updatedAt_ASC
+  _updatedAt_DESC
+  _isValid_ASC
+  _isValid_DESC
+}
+
+"""Record of type SiteConfig (siteconfig)"""
+type SiteconfigRecord implements RecordInterface {
+  _createdAt: DateTime!
+
+  """Editing URL"""
+  _editingUrl: String
+  _firstPublishedAt: DateTime!
+  _isValid: BooleanType!
+  _modelApiKey: String!
+  _publicationScheduledAt: DateTime
+  _publishedAt: DateTime!
+
+  """Generates SEO and Social card meta tags to be used in your frontend"""
+  _seoMetaTags(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+  ): [Tag!]!
+  _status: ItemStatus!
+  _unpublishingScheduledAt: DateTime
+  _updatedAt: DateTime!
+  backgroundimage: FileField
+  id: ItemId!
 }
 
 """Specifies how to filter by status"""
@@ -2939,6 +3284,30 @@ type Tag {
   attributes: MetaTagAttributes
   content: String
   tag: String!
+}
+
+"""Block of type Title (title)"""
+type TitleRecord implements RecordInterface {
+  _createdAt: DateTime!
+
+  """Editing URL"""
+  _editingUrl: String
+  _firstPublishedAt: DateTime!
+  _isValid: BooleanType!
+  _modelApiKey: String!
+  _publicationScheduledAt: DateTime
+  _publishedAt: DateTime!
+
+  """Generates SEO and Social card meta tags to be used in your frontend"""
+  _seoMetaTags(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+  ): [Tag!]!
+  _status: ItemStatus!
+  _unpublishingScheduledAt: DateTime
+  _updatedAt: DateTime!
+  id: ItemId!
+  title: String
 }
 
 """Specifies how to filter by upload type"""

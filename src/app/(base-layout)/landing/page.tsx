@@ -1,163 +1,161 @@
 
+import '../../global.css';
+import LandingHero from '@/components/LandingHero';
 
-import dynamic from 'next/dynamic';
-import { draftMode } from 'next/headers';
-import { notFound } from 'next/navigation';
-import ResponsiveImage, { ResponsiveImageFragment } from '@/components/ResponsiveImage';
-import { graphql, type FragmentOf } from '@/lib/datocms/graphql';
-import { executeQuery } from '@/lib/datocms/executeQuery';
-import { generateMetadataFn } from '@/lib/datocms/generateMetadataFn';
-import { TagFragment } from '@/lib/datocms/commonFragments';
-import { StructuredText, renderNodeRule } from 'react-datocms';
-import { isCode, isHeading } from 'datocms-structured-text-utils';
-import HeadingWithAnchorLink from '@/components/HeadingWithAnchorLink';
-import "bootstrap/dist/css/bootstrap.min.css";
+export default function Page() {
+  const events = [
+    { id: 1, title: 'Opening Night', date: '2025-10-01', description: 'Kick-off event with live music.' },
+    { id: 2, title: 'Art Expo', date: '2025-10-08', description: 'Local artists showcase.' },
+    { id: 3, title: 'Tech Meetup', date: '2025-10-15', description: 'Talks and networking.' },
+    { id: 4, title: 'Community Day', date: '2025-10-22', description: 'Workshops and food trucks.' },
+  ];
 
+  const venues = [
+    { id: 'v1', name: 'Main Hall', img: 'https://picsum.photos/800/400?random=1', desc: 'Large capacity venue for concerts and conferences.' },
+    { id: 'v2', name: 'Rooftop', img: 'https://picsum.photos/800/400?random=2', desc: 'Open-air space with skyline views.' },
+    { id: 'v3', name: 'Studio', img: 'https://picsum.photos/800/400?random=3', desc: 'Cozy room for workshops and meetups.' },
+  ];
 
+  const news = [
+    { id: 'n1', title: 'New season announced', date: '2025-09-10' },
+    { id: 'n2', title: 'Venue refurb complete', date: '2025-08-22' },
+    { id: 'n3', title: 'Volunteer program opens', date: '2025-08-01' },
+  ];
 
-
-
-const Code = dynamic(() => import('@/components/Code'));
-
-// GraphQL query for the landing page
-const query = graphql(
-  /* GraphQL */ `
-    query BasicPageQuery {
-     landing  {
-        _seoMetaTags {
-          ...TagFragment
-        }
-        title
-        heading
-        carousel {
-      __typename
-      ... on CarouselslideRecord {
-        id
-        caption
-        link
-        image {
-          url
-          alt
-        }
-      }
-    }
-        image {
-          responsiveImage {
-            ...ResponsiveImageFragment
-          }
-        }
-        secondaryimage {
-          responsiveImage {
-            ...ResponsiveImageFragment
-          }
-        }
-         structuredtext {
-          value
-         
-        }
-      }
-    }
-  `,
-  [TagFragment, ResponsiveImageFragment]
-);
-
-
-export const generateMetadata = generateMetadataFn({
-  query,
-  // A callback that picks the SEO meta tags from the result of the query
-  pickSeoMetaTags: (data) => data.landing?._seoMetaTags,
-});
-
-export default async function Page() {
-  const { isEnabled: isDraftModeEnabled } = draftMode();
-
-  const { landing } = await executeQuery(query, {
-    includeDrafts: isDraftModeEnabled,
-  });
-
-  
-
-  if (!landing) {
-    notFound();
-  }
-
-
-  const pageImage = (landing as unknown as {
-    image?: { responsiveImage?: FragmentOf<typeof ResponsiveImageFragment> };
-  }).image;
-
-  const secondaryImage = (landing as unknown as {
-    secondaryimage?: { responsiveImage?: FragmentOf<typeof ResponsiveImageFragment> };
-  }).secondaryimage;
-
-  
   return (
-    <main className="main-container">
-      <h1>{landing.title}</h1>
-      <p style={{fontSize:'20px', fontWeight:700}}>{landing.heading}</p>
-      <div id="carouselExample" className="carousel slide">
-  <div className="carousel-inner">
-    {landing.carousel.map((slide, i) => (
-      <div key={slide.id} className={`carousel-item ${i === 0 ? "active" : ""}`}>
-        <img
-          src={slide?.image?.url}
-          className="d-block w-80 h-100"
-          alt={slide.image?.alt || "Slide"}
-        />
-        {slide.caption && (
-          <div className="carousel-caption d-none d-md-block">
-            <p>{slide.caption}</p>
+    <>
+      <LandingHero />
+
+      {/* About */}
+      <section id="about" className="py-5">
+        <div className="container">
+          <h2 className="mb-3">About</h2>
+          <p className="fs-5">We are a vibrant space hosting events, exhibitions, and community gatherings. This section will be populated from DatoCMS.</p>
+        </div>
+      </section>
+
+      {/* Events: 2x2 grid */}
+      <section id="events" className="py-5 bg-light">
+        <div className="container">
+          <h2 className="mb-4">Events</h2>
+          <div className="row g-4">
+            {events.map(ev => (
+              <div className="col-12 col-md-6" key={ev.id}>
+                <div className="card h-100">
+                  <div className="card-body">
+                    <h5 className="card-title mb-1">{ev.title}</h5>
+                    <div className="text-muted mb-2">{ev.date}</div>
+                    <p className="card-text">{ev.description}</p>
+                    <a href="#" className="btn btn-primary btn-sm">Read more</a>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
-        )}
-      </div>
-    ))}
-  </div>
-  <button
-    className="carousel-control-prev"
-    type="button"
-    data-bs-target="#carouselExample"
-    data-bs-slide="prev"
-  >
-    <span className="carousel-control-prev-icon"></span>
-  </button>
-  <button
-    className="carousel-control-next"
-    type="button"
-    data-bs-target="#carouselExample"
-    data-bs-slide="next"
-  >
-    <span className="carousel-control-next-icon"></span>
-  </button>
-</div>
+        </div>
+      </section>
 
+      {/* Venues */}
+      <section id="venues" className="py-5">
+        <div className="container">
+          <h2 className="mb-4">Venues</h2>
+          <div className="row g-4">
+            {venues.map(v => (
+              <div className="col-12 col-md-4" key={v.id}>
+                <div className="card h-100">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={v.img} className="card-img-top" alt={v.name} />
+                  <div className="card-body">
+                    <h5 className="card-title">{v.name}</h5>
+                    <p className="card-text">{v.desc}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-      <StructuredText
-        data={landing.structuredtext}
-        customNodeRules={[
-          renderNodeRule(isCode, ({ node, key }) => <Code key={key} node={node} />),
-          renderNodeRule(isHeading, ({ node, key, children }) => (
-            <HeadingWithAnchorLink node={node} key={key}>
-              {children}
-            </HeadingWithAnchorLink>
-          )),
-        ]}
-       
-      />
-      {pageImage?.responsiveImage && (
-        <ResponsiveImage data={pageImage.responsiveImage} />
-      )}
-       {secondaryImage?.responsiveImage && (
-        <ResponsiveImage data={secondaryImage.responsiveImage} />
-      )}
+      {/* Jobs */}
+      <section id="jobs" className="py-5 bg-light">
+        <div className="container">
+          <h2 className="mb-3">Jobs</h2>
+          <p>We are not hiring right now. Check back soon.</p>
+        </div>
+      </section>
 
-     
-      {/*
-       * Structured Text is a JSON format similar to HTML, but with the advantage
-       * of a significantly reduced and tailored set of possible tags
-       * for editorial content, along with the capability to create hyperlinks
-       * to other DatoCMS records and embed custom DatoCMS blocks.
-       */}
-      
-    </main>
+      {/* News */}
+      <section id="news" className="py-5">
+        <div className="container">
+          <h2 className="mb-3">News</h2>
+          <ul className="list-group">
+            {news.map(n => (
+              <li className="list-group-item d-flex justify-content-between align-items-center" key={n.id}>
+                <span>{n.title}</span>
+                <span className="badge bg-secondary">{n.date}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* Newsletter */}
+      <section id="newsletter" className="py-5 bg-light">
+        <div className="container">
+          <h2 className="mb-3">Newsletter</h2>
+          <form className="row gy-2 gx-3 align-items-center">
+            <div className="col-sm-5">
+              <label htmlFor="newsletterName" className="form-label">Name</label>
+              <input type="text" id="newsletterName" className="form-control" placeholder="Your name" />
+            </div>
+            <div className="col-sm-5">
+              <label htmlFor="newsletterEmail" className="form-label">Email</label>
+              <input type="email" id="newsletterEmail" className="form-control" placeholder="you@example.com" />
+            </div>
+            <div className="col-sm-2 d-grid">
+              <label className="form-label invisible">Submit</label>
+              <button type="submit" className="btn btn-primary">Subscribe</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      {/* Contact / Footer */}
+      <footer id="contact" className="py-5 text-bg-dark">
+        <div className="container">
+          <div className="row g-4 align-items-start">
+            <div className="col-12 col-lg-6">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="https://picsum.photos/800/400?random=4" alt="Contact" className="img-fluid rounded mb-3" />
+              <address className="mb-0">
+                <strong>Our Hub</strong><br />
+                123 Main Street<br />
+                City, Country<br />
+                <a href="tel:+123456789" className="link-light d-block">+1 234 567 89</a>
+                <a href="mailto:info@example.com" className="link-light">info@example.com</a>
+              </address>
+            </div>
+            <div className="col-12 col-lg-6">
+              <h3 className="mb-3">Get in touch</h3>
+              <form>
+                <div className="mb-3">
+                  <label htmlFor="contactName" className="form-label">Name</label>
+                  <input type="text" className="form-control" id="contactName" placeholder="Your name" />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="contactEmail" className="form-label">Email</label>
+                  <input type="email" className="form-control" id="contactEmail" placeholder="you@example.com" />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="contactMessage" className="form-label">Message</label>
+                  <textarea className="form-control" id="contactMessage" rows={5} placeholder="Your message"></textarea>
+                </div>
+                <button type="submit" className="btn btn-primary">Submit</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </>
   );
 }
