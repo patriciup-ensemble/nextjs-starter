@@ -39,9 +39,17 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
      * the interface
      */
     const { item, itemType, locale } = await request.json();
+    // ---- ADD LOGGING HERE ----
+    console.log('Token received:', token);
+    console.log('Item:', item);
+    console.log('Item type:', itemType);
+
+    const url = await recordToWebsiteRoute(item, itemType.attributes.api_key, locale);
+
+    console.log('URL generated:', url);
 
     // We can use this info to generate the frontend URL associated
-    const url = await recordToWebsiteRoute(item, itemType.attributes.api_key, locale);
+
 
     const response: WebPreviewsResponse = { previewLinks: [] };
 
