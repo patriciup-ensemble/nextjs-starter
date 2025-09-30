@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 
+
 export default function PopoverInit() {
   useEffect(() => {
     let disposers: Array<() => void> = [];
@@ -21,6 +22,7 @@ export default function PopoverInit() {
           container: 'body',
           placement: 'bottom',
           delay: { show: 0, hide: 100 },
+          customClass: 'custom-tooltip'
         });
 
         const show = () => {

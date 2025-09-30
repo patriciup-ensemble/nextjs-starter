@@ -6,15 +6,12 @@
   and (prefers-color-scheme: light);
 
 @import 'bootstrap/dist/css/bootstrap.min.css';
+@import "bootstrap-icons/font/bootstrap-icons.css";
 
 html { scroll-behavior: smooth; }
 
 /* Navbar hover: slightly darker background/text */
-.nav .nav-link:hover,
-.nav .nav-link:focus {
-  background-color: rgba(0,0,0,0.12) !important;
-  color: #000 !important;
-}
+
 
 /* Show dropdown on hover (desktop) */
 @media (min-width: 992px) {
@@ -24,13 +21,12 @@ html { scroll-behavior: smooth; }
   }
 }
 
-/* Allow tooltip content to be interactive */
-.tooltip .tooltip-inner {
-  max-width: 280px;
-  padding: 0;
+/* Dropdown styles for simple hover menu */
+.nav-item.dropdown .dropdown-menu {
+  display: none;
 }
-.tooltip .list-group-item {
-  border: 0;
+.nav-item.dropdown:hover .dropdown-menu {
+  display: block;
 }
 
 
@@ -61,3 +57,51 @@ html { scroll-behavior: smooth; }
   }
 }
 
+.nav-pills .nav-link {
+  transition: color 0.2s;
+}
+
+.nav-pills .nav-link:hover {
+  color: #ccc !important;
+  opacity: 1 !important;
+  background-color: transparent !important;
+}
+
+.h-800 {
+  height: 887px !important;
+}
+.p-100 {
+  padding-left: 110px !important;
+  padding-right: 110px !important;
+}
+
+.linkedin-icon i {
+  color: #ffffff;       /* default white */
+  font-size: 2.5rem;    /* larger size */
+  transition: color 0.3s;
+}
+
+/* Hover effect */
+.linkedin-icon:hover i {
+  color: #f4cf58;       /* yellow accent */
+}
+
+/* Basic dropdown theming */
+.dropdown-menu-dark {
+  background-color: rgba(0,0,0,0.8);
+  border: 0;
+}
+.dropdown-menu-dark a {
+  background-color: rgba(0,0,0,0.8);
+  color: #e3b727;
+}
+.dropdown-menu-dark a:hover {
+  color: #c16262;
+  
+  
+}
+/* Remove arrow only for dropdowns inside .dropdown-menu-dark */
+.dropdown-menu-dark ~ .nav-link.dropdown-toggle::after,
+.nav .dropdown-toggle::after {
+  display: none !important;
+}

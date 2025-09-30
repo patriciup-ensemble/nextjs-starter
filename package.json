@@ -19,6 +19,7 @@
     "@popperjs/core": "^2.11.8",
     "@types/highlight.js": "^10.1.0",
     "bootstrap": "^5.3.8",
+    "bootstrap-icons": "^1.13.1",
     "datocms-structured-text-to-plain-text": "^5.0.0",
     "datocms-structured-text-utils": "^5.0.0",
     "gql.tada": "^1.8.10",

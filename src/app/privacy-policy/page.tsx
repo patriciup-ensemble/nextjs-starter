@@ -1,15 +1,50 @@
-import LandingHero from '@/components/LandingHero';
+import LandingHero, { MenuItem } from '@/components/HeroSection';
+import { graphql } from '@/lib/datocms/graphql';
+import { executeQuery } from '@/lib/datocms/executeQuery';
+import { draftMode } from 'next/headers';
 import ScrollToHash from '@/components/ScrollToHash';
 
 export const metadata = {
   title: 'Privacy Policy',
 };
+type HeroBlock = {
+  backgroundimage?: { url: string };
+  overlayopacity?: number;
+  title: string;
+  logo?: { url: string };
+  menuitems: MenuItem[];
+};
 
-export default function PrivacyPolicyPage() {
+export default async function PrivacyPolicyPage() {
+  const { isEnabled: isDraftModeEnabled } = draftMode();
+  const query = graphql(`
+    query LandingHeroForPolicy {
+      landing {
+        hero {
+          backgroundimage { url }
+          overlayopacity
+          title
+          logo { url }
+          menuitems { ... on MenuitemRecord { label url newtab tooltiphtml } }
+        }
+      }
+    }
+  `);
+  const data = await executeQuery(query, { includeDrafts: isDraftModeEnabled });
+  const hero = data.landing?.hero as HeroBlock;
+
   return (
     <>
       <ScrollToHash />
-      <LandingHero />
+      {hero && (
+        <LandingHero
+          backgroundUrl={hero.backgroundimage?.url}
+          overlayOpacity={hero.overlayopacity}
+          title={hero.title}
+          logoUrl={hero.logo?.url}
+          menuitems={hero.menuitems}
+        />
+      )}
       <div className="container py-5">
         <h1 className="mb-4">Privacy Policy</h1>
         <p className="lead">This is mock content for the privacy policy. Replace with actual content from your CMS.</p>

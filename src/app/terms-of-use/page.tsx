@@ -1,13 +1,48 @@
-import LandingHero from '@/components/LandingHero';
+import LandingHero, { MenuItem } from '@/components/HeroSection';
+import { graphql } from '@/lib/datocms/graphql';
+import { executeQuery } from '@/lib/datocms/executeQuery';
+import { draftMode } from 'next/headers';
 
 export const metadata = {
   title: 'Terms of Use',
 };
+type HeroBlock = {
+  backgroundimage?: { url: string };
+  overlayopacity?: number;
+  title: string;
+  logo?: { url: string };
+  menuitems: MenuItem[];
+};
 
-export default function TermsOfUsePage() {
+export default async function TermsOfUsePage() {
+  const { isEnabled: isDraftModeEnabled } = draftMode();
+  const query = graphql(`
+    query LandingHeroForTerms {
+      landing {
+        hero {
+          backgroundimage { url }
+          overlayopacity
+          title
+          logo { url }
+          menuitems { ... on MenuitemRecord { label url newtab tooltiphtml } }
+        }
+      }
+    }
+  `);
+  const data = await executeQuery(query, { includeDrafts: isDraftModeEnabled });
+  const hero = data.landing?.hero as HeroBlock;
+
   return (
     <>
-      <LandingHero />
+      {hero && (
+        <LandingHero
+          backgroundUrl={hero.backgroundimage?.url}
+          overlayOpacity={hero.overlayopacity}
+          title={hero.title}
+          logoUrl={hero.logo?.url}
+          menuitems={hero.menuitems}
+        />
+      )}
       <div className="container py-5">
         <h1 className="mb-4">Terms of Use</h1>
         <p className="lead">These are mock terms. Replace with actual legal content from your CMS.</p>
