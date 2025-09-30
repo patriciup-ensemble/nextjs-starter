@@ -1,10 +1,3 @@
-type AboutModelAboutstructuredtextField {
-  blocks: [String!]!
-  inlineBlocks: [String!]!
-  links: [String!]!
-  value: JsonField!
-}
-
 """Record of type About (about)"""
 type AboutRecord implements RecordInterface {
   _createdAt: DateTime!
@@ -25,10 +18,8 @@ type AboutRecord implements RecordInterface {
   _status: ItemStatus!
   _unpublishingScheduledAt: DateTime
   _updatedAt: DateTime!
-  aboutstructuredtext: AboutModelAboutstructuredtextField
   id: ItemId!
-  sidelinks: [SidelinkitemRecord!]!
-  sidenavigation: [SidenavigationitemRecord!]!
+  label: String
   title: String
 }
 
@@ -62,6 +53,70 @@ type AboutSectionRecord implements RecordInterface {
   content: AboutSectionModelContentField
   id: ItemId!
   title: String
+}
+
+input ArticleModelFilter {
+  _createdAt: CreatedAtFilter
+  id: ItemIdFilter
+  _firstPublishedAt: PublishedAtFilter
+  _publicationScheduledAt: PublishedAtFilter
+  _unpublishingScheduledAt: PublishedAtFilter
+  _publishedAt: PublishedAtFilter
+  _status: StatusFilter
+  _updatedAt: UpdatedAtFilter
+  _isValid: BooleanFilter
+  title: StringFilter
+  url: LinkFilter
+  OR: [ArticleModelFilter]
+  AND: [ArticleModelFilter]
+}
+
+enum ArticleModelOrderBy {
+  _createdAt_ASC
+  _createdAt_DESC
+  id_ASC
+  id_DESC
+  _firstPublishedAt_ASC
+  _firstPublishedAt_DESC
+  _publicationScheduledAt_ASC
+  _publicationScheduledAt_DESC
+  _unpublishingScheduledAt_ASC
+  _unpublishingScheduledAt_DESC
+  _publishedAt_ASC
+  _publishedAt_DESC
+  _status_ASC
+  _status_DESC
+  _updatedAt_ASC
+  _updatedAt_DESC
+  _isValid_ASC
+  _isValid_DESC
+  title_ASC
+  title_DESC
+}
+
+"""Record of type Article (article)"""
+type ArticleRecord implements RecordInterface {
+  _createdAt: DateTime!
+
+  """Editing URL"""
+  _editingUrl: String
+  _firstPublishedAt: DateTime!
+  _isValid: BooleanType!
+  _modelApiKey: String!
+  _publicationScheduledAt: DateTime
+  _publishedAt: DateTime!
+
+  """Generates SEO and Social card meta tags to be used in your frontend"""
+  _seoMetaTags(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+  ): [Tag!]!
+  _status: ItemStatus!
+  _unpublishingScheduledAt: DateTime
+  _updatedAt: DateTime!
+  id: ItemId!
+  title: String
+  url: String!
 }
 
 """Block of type BackgroundImage (backgroundimage)"""
@@ -221,6 +276,64 @@ scalar Date
 
 """A ISO 8601 compliant datetime value"""
 scalar DateTime
+
+input DhLandingPageModelFilter {
+  _createdAt: CreatedAtFilter
+  id: ItemIdFilter
+  _firstPublishedAt: PublishedAtFilter
+  _publicationScheduledAt: PublishedAtFilter
+  _unpublishingScheduledAt: PublishedAtFilter
+  _publishedAt: PublishedAtFilter
+  _status: StatusFilter
+  _updatedAt: UpdatedAtFilter
+  _isValid: BooleanFilter
+  OR: [DhLandingPageModelFilter]
+  AND: [DhLandingPageModelFilter]
+}
+
+enum DhLandingPageModelOrderBy {
+  _createdAt_ASC
+  _createdAt_DESC
+  id_ASC
+  id_DESC
+  _firstPublishedAt_ASC
+  _firstPublishedAt_DESC
+  _publicationScheduledAt_ASC
+  _publicationScheduledAt_DESC
+  _unpublishingScheduledAt_ASC
+  _unpublishingScheduledAt_DESC
+  _publishedAt_ASC
+  _publishedAt_DESC
+  _status_ASC
+  _status_DESC
+  _updatedAt_ASC
+  _updatedAt_DESC
+  _isValid_ASC
+  _isValid_DESC
+}
+
+"""Record of type DH Landing Page (dh_landing_page)"""
+type DhLandingPageRecord implements RecordInterface {
+  _createdAt: DateTime!
+
+  """Editing URL"""
+  _editingUrl: String
+  _firstPublishedAt: DateTime!
+  _isValid: BooleanType!
+  _modelApiKey: String!
+  _publicationScheduledAt: DateTime
+  _publishedAt: DateTime!
+
+  """Generates SEO and Social card meta tags to be used in your frontend"""
+  _seoMetaTags(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+  ): [Tag!]!
+  _status: ItemStatus!
+  _unpublishingScheduledAt: DateTime
+  _updatedAt: DateTime!
+  id: ItemId!
+}
 
 """Block of type EventItem (eventitem)"""
 type EventitemRecord implements RecordInterface {
@@ -2746,6 +2859,30 @@ type LandingRecord implements RecordInterface {
   id: ItemId!
 }
 
+"""Specifies how to filter Single-link fields"""
+input LinkFilter {
+  """
+  Search for records with an exact match. The specified value must be a Record ID
+  """
+  eq: ItemId
+
+  """
+  Exclude records with an exact match. The specified value must be a Record ID
+  """
+  neq: ItemId
+
+  """Filter records linked to one of the specified records"""
+  in: [ItemId]
+
+  """Filter records not linked to one of the specified records"""
+  notIn: [ItemId]
+
+  """
+  Filter records with the specified field defined (i.e. with any value) or not
+  """
+  exists: BooleanType
+}
+
 """Block of type Menu Item Block (menu_item_block)"""
 type MenuItemBlockRecord implements RecordInterface {
   _createdAt: DateTime!
@@ -2900,6 +3037,20 @@ input PublishedAtFilter {
 """The query root for this schema"""
 type Query {
   """Returns meta information regarding a record collection"""
+  _allArticlesMeta(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+    filter: ArticleModelFilter
+  ): CollectionMetadata!
+
+  """Returns meta information regarding a record collection"""
+  _allDhLandingPagesMeta(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+    filter: DhLandingPageModelFilter
+  ): CollectionMetadata!
+
+  """Returns meta information regarding a record collection"""
   _allLandingsMeta(
     """The locale to use to fetch the field's content"""
     locale: SiteLocale
@@ -2955,6 +3106,44 @@ type Query {
     """
     fallbackLocales: [SiteLocale!]
   ): AboutRecord
+
+  """Returns a collection of records"""
+  allArticles(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+
+    """Skip the first results"""
+    skip: IntType
+
+    """Limit the number of results"""
+    first: IntType = 20
+    filter: ArticleModelFilter
+    orderBy: [ArticleModelOrderBy] = [_updatedAt_DESC]
+  ): [ArticleRecord!]!
+
+  """Returns a collection of records"""
+  allDhLandingPages(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+
+    """Skip the first results"""
+    skip: IntType
+
+    """Limit the number of results"""
+    first: IntType = 20
+    filter: DhLandingPageModelFilter
+    orderBy: [DhLandingPageModelOrderBy] = [_updatedAt_DESC]
+  ): [DhLandingPageRecord!]!
 
   """Returns a collection of records"""
   allLandings(
@@ -3050,6 +3239,32 @@ type Query {
     filter: UploadFilter
     orderBy: [UploadOrderBy] = [_createdAt_DESC]
   ): [FileField!]!
+
+  """Returns a specific record"""
+  article(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+    filter: ArticleModelFilter
+    orderBy: [ArticleModelOrderBy] = [_updatedAt_DESC]
+  ): ArticleRecord
+
+  """Returns a specific record"""
+  dhLandingPage(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+    filter: DhLandingPageModelFilter
+    orderBy: [DhLandingPageModelOrderBy] = [_updatedAt_DESC]
+  ): DhLandingPageRecord
 
   """Returns a specific record"""
   landing(
