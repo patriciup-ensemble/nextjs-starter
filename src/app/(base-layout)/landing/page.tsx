@@ -1,163 +1,175 @@
 
-
-import dynamic from 'next/dynamic';
-import { draftMode } from 'next/headers';
-import { notFound } from 'next/navigation';
-import ResponsiveImage, { ResponsiveImageFragment } from '@/components/ResponsiveImage';
-import { graphql, type FragmentOf } from '@/lib/datocms/graphql';
+import '../../global.css';
+import { graphql} from '@/lib/datocms/graphql';
 import { executeQuery } from '@/lib/datocms/executeQuery';
-import { generateMetadataFn } from '@/lib/datocms/generateMetadataFn';
-import { TagFragment } from '@/lib/datocms/commonFragments';
-import { StructuredText, renderNodeRule } from 'react-datocms';
-import { isCode, isHeading } from 'datocms-structured-text-utils';
-import HeadingWithAnchorLink from '@/components/HeadingWithAnchorLink';
-import "bootstrap/dist/css/bootstrap.min.css";
-
-
-
-
-
-const Code = dynamic(() => import('@/components/Code'));
-
-// GraphQL query for the landing page
-const query = graphql(
-  /* GraphQL */ `
-    query BasicPageQuery {
-     landing  {
-        _seoMetaTags {
-          ...TagFragment
-        }
-        title
-        heading
-        carousel {
-      __typename
-      ... on CarouselslideRecord {
-        id
-        caption
-        link
-        image {
-          url
-          alt
-        }
-      }
-    }
-        image {
-          responsiveImage {
-            ...ResponsiveImageFragment
-          }
-        }
-        secondaryimage {
-          responsiveImage {
-            ...ResponsiveImageFragment
-          }
-        }
-         structuredtext {
-          value
-         
-        }
-      }
-    }
-  `,
-  [TagFragment, ResponsiveImageFragment]
-);
-
-
-export const generateMetadata = generateMetadataFn({
-  query,
-  // A callback that picks the SEO meta tags from the result of the query
-  pickSeoMetaTags: (data) => data.landing?._seoMetaTags,
-});
+import { normalizeUrl } from '@/lib/normalizeUrl';
+import AboutSection from '@/components/aboutSection/AboutSection';
+import EventsSection, { EventItem } from '@/components/eventSection/EventSection';
+import VenuesSection from '@/components/venueSection/VenueSection';
+import HeroSection from '@/components/HeroSection';
+import FooterSection, { FooterProps } from '@/components/footerSection/FooterSection';
 
 export default async function Page() {
-  const { isEnabled: isDraftModeEnabled } = draftMode();
+ 
 
-  const { landing } = await executeQuery(query, {
-    includeDrafts: isDraftModeEnabled,
-  });
-
+  type MenuItem = {
+    label: string;
+    url: string;
+    newtab?: boolean;
+  };
+  
+  type HeroBlock = {
+    backgroundimage?: { url: string };
+    overlayopacity?: number;
+    title: string;
+    logo?: { url: string };
+    menuitems: MenuItem[];
+  };
   
 
-  if (!landing) {
-    notFound();
+  const query = graphql(`
+    query LandingPageQuery {
+      landing {
+        hero {
+          backgroundimage {
+            url
+          }
+          overlayopacity
+          title
+          logo {
+            url
+          }
+          menuitems {
+            ... on MenuitemRecord {
+              label
+              url
+              newtab
+              tooltiphtml
+            }
+          }
+        }
+        content {
+      __typename
+      ... on AboutSectionRecord {
+        title
+        content {
+          value
+        }
+      }
+      ... on EventsectionRecord {
+        title
+        events {
+          ... on EventitemRecord {
+            title
+            date
+            description
+            isFeatured
+            images {
+              url
+            }
+            url
+          }
+        }
+      }
+      ... on VenuesectionRecord{
+        title
+  name
+  description
+  link
+  image {
+    url
   }
-
-
-  const pageImage = (landing as unknown as {
-    image?: { responsiveImage?: FragmentOf<typeof ResponsiveImageFragment> };
-  }).image;
-
-  const secondaryImage = (landing as unknown as {
-    secondaryimage?: { responsiveImage?: FragmentOf<typeof ResponsiveImageFragment> };
-  }).secondaryimage;
-
+      }   
   
+    }  
+       footer{
+          url
+          logo{
+            url
+          }
+          addressLine1
+          addressLine2
+          newsletterLink
+          newsletterText
+        }
+      }
+    }
+  `);
+  
+
+  const data = await executeQuery(query);
+  const hero = data.landing?.hero as HeroBlock;
+  const contentBlocks = data.landing?.content || [];
+  const footer = data.landing?.footer as FooterProps
+ 
+  
+  
+
   return (
-    <main className="main-container">
-      <h1>{landing.title}</h1>
-      <p style={{fontSize:'20px', fontWeight:700}}>{landing.heading}</p>
-      <div id="carouselExample" className="carousel slide">
-  <div className="carousel-inner">
-    {landing.carousel.map((slide, i) => (
-      <div key={slide.id} className={`carousel-item ${i === 0 ? "active" : ""}`}>
-        <img
-          src={slide?.image?.url}
-          className="d-block w-80 h-100"
-          alt={slide.image?.alt || "Slide"}
-        />
-        {slide.caption && (
-          <div className="carousel-caption d-none d-md-block">
-            <p>{slide.caption}</p>
-          </div>
-        )}
-      </div>
-    ))}
-  </div>
-  <button
-    className="carousel-control-prev"
-    type="button"
-    data-bs-target="#carouselExample"
-    data-bs-slide="prev"
-  >
-    <span className="carousel-control-prev-icon"></span>
-  </button>
-  <button
-    className="carousel-control-next"
-    type="button"
-    data-bs-target="#carouselExample"
-    data-bs-slide="next"
-  >
-    <span className="carousel-control-next-icon"></span>
-  </button>
-</div>
-
-
-      <StructuredText
-        data={landing.structuredtext}
-        customNodeRules={[
-          renderNodeRule(isCode, ({ node, key }) => <Code key={key} node={node} />),
-          renderNodeRule(isHeading, ({ node, key, children }) => (
-            <HeadingWithAnchorLink node={node} key={key}>
-              {children}
-            </HeadingWithAnchorLink>
-          )),
-        ]}
-       
+    <>
+     <HeroSection
+        backgroundUrl={hero?.backgroundimage?.url}
+        overlayOpacity={hero.overlayopacity}
+        title={hero.title}
+        logoUrl={hero.logo?.url}
+        menuitems={hero.menuitems}
       />
-      {pageImage?.responsiveImage && (
-        <ResponsiveImage data={pageImage.responsiveImage} />
-      )}
-       {secondaryImage?.responsiveImage && (
-        <ResponsiveImage data={secondaryImage.responsiveImage} />
-      )}
-
-     
-      {/*
-       * Structured Text is a JSON format similar to HTML, but with the advantage
-       * of a significantly reduced and tailored set of possible tags
-       * for editorial content, along with the capability to create hyperlinks
-       * to other DatoCMS records and embed custom DatoCMS blocks.
-       */}
       
-    </main>
+
+{contentBlocks.map((block: any, i: number) => {
+      switch (block.__typename) {
+        case "AboutSectionRecord":
+          return (
+            <AboutSection
+              key={i}
+              title={block.title}
+              content={block.content}
+            />
+          );
+
+          case "EventsectionRecord":
+           
+            const events: EventItem[] = (block.events || []).map((ev: any) => ({
+              title: ev.title,
+              date: ev.date,
+              description: ev.description,
+              image: ev.images && ev.images.length > 0 ? { url: ev.images[0].url } : undefined,
+              images: ev.images || undefined,
+              url: ev.url ? normalizeUrl(ev.url) : undefined,
+              isFeatured: ev.isFeatured || false,
+            }));
+          
+            return <EventsSection key={i} title={block.title} events={events} />;
+
+          case "VenuesectionRecord":
+           
+            return (
+              <VenuesSection
+                key={i}
+                title={block.title}
+                venue={{
+                  name: block.name,
+                  desc: block.description,
+                  url: block.link || "",
+                  image: block.image.url || "",  
+                }}
+              />
+            );
+
+    default:
+      return null;
+        }
+      })}
+<FooterSection
+  logo={footer?.logo}
+  addressLine1={footer.addressLine1}
+  addressLine2={footer.addressLine2}
+  url={footer.url}
+  newsletterText={footer.newsletterText}
+  newsletterLink={footer.newsletterLink}
+  extraInfo={footer?.extraInfo}
+/>
+      
+    </>
   );
 }

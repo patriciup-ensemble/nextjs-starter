@@ -117,3 +117,21 @@ export function isRelativeUrl(path: string): boolean {
     }
   }
 }
+
+export function normalizeUrl(url?: string): string {
+  if (!url) return "#";
+
+  const trimmed = url.trim();
+
+  // If it starts with # → root-level anchor to work from any page
+  if (trimmed.startsWith("#")) return `/${trimmed}`;
+
+  // If it already has a protocol, leave it as-is (external link)
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+
+  // If it starts with a slash, it's an internal absolute path
+  if (trimmed.startsWith("/")) return trimmed;
+
+  // Otherwise, treat as internal relative path
+  return `/${trimmed}`;
+}
