@@ -23,8 +23,8 @@ export async function recordToWebsiteRoute(
     case 'article': {
       return `/blog/${await recordToSlug(item, itemTypeApiKey, locale)}`;
     }
-    case 'landing': { // 👈 your Landing model
-      return `/${await recordToSlug(item, itemTypeApiKey, locale)}`;
+    case 'landing': { // 👈 always homepage
+      return '/';
     }
     default:
       return null;
@@ -40,9 +40,7 @@ export async function recordToSlug(
     case 'article': {
       return item.attributes.slug as string;
     }
-    case 'landing': { // 👈 support slug for landing
-      return item.attributes.slug as string;
-    }
+
     default:
       return null;
   }
