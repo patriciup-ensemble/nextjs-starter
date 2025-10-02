@@ -1,6 +1,6 @@
 
 import '../../global.css';
-import { graphql} from '@/lib/datocms/graphql';
+import { graphql } from '@/lib/datocms/graphql';
 import { executeQuery } from '@/lib/datocms/executeQuery';
 import { normalizeUrl } from '@/lib/normalizeUrl';
 import AboutSection from '@/components/aboutSection/AboutSection';
@@ -8,16 +8,17 @@ import EventsSection, { EventItem } from '@/components/eventSection/EventSection
 import VenuesSection from '@/components/venueSection/VenueSection';
 import HeroSection from '@/components/HeroSection';
 import FooterSection, { FooterProps } from '@/components/footerSection/FooterSection';
+import { isPreviewMode } from '@/app/api/utils';
 
 export default async function Page() {
- 
+
 
   type MenuItem = {
     label: string;
     url: string;
     newtab?: boolean;
   };
-  
+
   type HeroBlock = {
     backgroundimage?: { url: string };
     overlayopacity?: number;
@@ -25,7 +26,7 @@ export default async function Page() {
     logo?: { url: string };
     menuitems: MenuItem[];
   };
-  
+
 
   const query = graphql(`
     query LandingPageQuery {
@@ -95,40 +96,41 @@ export default async function Page() {
       }
     }
   `);
-  
 
-  const data = await executeQuery(query);
+
+  const preview = isPreviewMode(); // ✅ detect draft mode
+  const data = await executeQuery(query, { includeDrafts: preview });
   const hero = data.landing?.hero as HeroBlock;
   const contentBlocks = data.landing?.content || [];
   const footer = data.landing?.footer as FooterProps
- 
-  
-  
+
+
+
 
   return (
     <>
-     <HeroSection
+      <HeroSection
         backgroundUrl={hero?.backgroundimage?.url}
         overlayOpacity={hero.overlayopacity}
         title={hero.title}
         logoUrl={hero.logo?.url}
         menuitems={hero.menuitems}
       />
-      
 
-{contentBlocks.map((block: any, i: number) => {
-      switch (block.__typename) {
-        case "AboutSectionRecord":
-          return (
-            <AboutSection
-              key={i}
-              title={block.title}
-              content={block.content}
-            />
-          );
+
+      {contentBlocks.map((block: any, i: number) => {
+        switch (block.__typename) {
+          case "AboutSectionRecord":
+            return (
+              <AboutSection
+                key={i}
+                title={block.title}
+                content={block.content}
+              />
+            );
 
           case "EventsectionRecord":
-           
+
             const events: EventItem[] = (block.events || []).map((ev: any) => ({
               title: ev.title,
               date: ev.date,
@@ -138,11 +140,11 @@ export default async function Page() {
               url: ev.url ? normalizeUrl(ev.url) : undefined,
               isFeatured: ev.isFeatured || false,
             }));
-          
+
             return <EventsSection key={i} title={block.title} events={events} />;
 
           case "VenuesectionRecord":
-           
+
             return (
               <VenuesSection
                 key={i}
@@ -151,25 +153,25 @@ export default async function Page() {
                   name: block.name,
                   desc: block.description,
                   url: block.link || "",
-                  image: block.image.url || "",  
+                  image: block.image.url || "",
                 }}
               />
             );
 
-    default:
-      return null;
+          default:
+            return null;
         }
       })}
-<FooterSection
-  logo={footer?.logo}
-  addressLine1={footer.addressLine1}
-  addressLine2={footer.addressLine2}
-  url={footer.url}
-  newsletterText={footer.newsletterText}
-  newsletterLink={footer.newsletterLink}
-  extraInfo={footer?.extraInfo}
-/>
-      
+      <FooterSection
+        logo={footer?.logo}
+        addressLine1={footer.addressLine1}
+        addressLine2={footer.addressLine2}
+        url={footer.url}
+        newsletterText={footer.newsletterText}
+        newsletterLink={footer.newsletterLink}
+        extraInfo={footer?.extraInfo}
+      />
+
     </>
   );
 }

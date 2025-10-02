@@ -135,3 +135,8 @@ export function normalizeUrl(url?: string): string {
   // Otherwise, treat as internal relative path
   return `/${trimmed}`;
 }
+
+export function isPreviewMode(): boolean {
+  const cookieStore = cookies();
+  return !!cookieStore.get('next-preview-data');
+}
