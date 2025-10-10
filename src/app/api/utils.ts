@@ -56,7 +56,7 @@ export function successfulResponse(data?: unknown, status = 200) {
   );
 }
 
-import { cookies } from 'next/headers';
+import { cookies, draftMode } from 'next/headers';
 
 /**
  * This function should not exist :) Its only purpose is to correct an issue
@@ -137,6 +137,6 @@ export function normalizeUrl(url?: string): string {
 }
 
 export function isPreviewMode(): boolean {
-  const cookieStore = cookies();
-  return !!cookieStore.get('next-preview-data');
+  const { isEnabled } = draftMode();
+  return isEnabled;
 }
