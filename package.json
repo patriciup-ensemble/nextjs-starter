@@ -7,11 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint && prettier --check .",
-    "generate-schema": "gql.tada generate schema https://graphql.datocms.com/preview --header \"Authorization: Bearer $DATOCMS_DRAFT_CONTENT_CDA_TOKEN\"",
+    "generate-schema": "dotenv -c -- gql.tada generate schema https://graphql.datocms.com/preview --header \"Authorization: Bearer $DATOCMS_DRAFT_CONTENT_CDA_TOKEN\"",
     "generate-output": "gql.tada generate-output --tsconfig ./tsconfig.json --output ./src/lib/datocms/graphql-env.d.ts",
     "sync-datocms": "npm run generate-schema && npm run generate-output",
     "format": "npx prettier . --write",
-    "prepare": "npx simple-git-hooks && npm run generate-schema"
+    "prepare": "npx simple-git-hooks "
   },
   "dependencies": {
     "@datocms/cda-client": "^0.2.6",

@@ -65,14 +65,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
          */
         response.previewLinks.push({
           label: 'Draft version',
-          url: new URL(
-            /*
-             * We generate the URL in a way that it first passes through the
-             * endpoint that enables the Draft Mode.
-             */
-            `/api/draft-mode/enable?url=${url}&token=${token}`,
-            request.url,
-          ).toString(),
+          url: `${request.nextUrl.origin}/api/draft-mode/enable?url=${url}&token=${token}`,
+
         });
       }
 
