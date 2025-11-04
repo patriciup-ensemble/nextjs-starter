@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 
 declare global {
@@ -12,17 +12,16 @@ declare global {
 
 export default function GoogleAnalytics({ gaId }: { gaId: string }) {
     const pathname = usePathname();
-    const searchParams = useSearchParams();
 
     useEffect(() => {
         if (typeof window.gtag === 'function') {
-            const url = pathname + (searchParams?.toString() ? `?${searchParams.toString()}` : '');
-            // Use config to update page path (this automatically sends a page_view)
+            // Use window.location to get full URL including search params (avoids Suspense requirement)
+            const url = window.location.pathname + window.location.search;
             window.gtag('config', gaId, {
                 page_path: url,
             });
         }
-    }, [pathname, searchParams, gaId]);
+    }, [pathname, gaId]);
 
     useEffect(() => {
         // Track hash changes (for anchor link navigation)
